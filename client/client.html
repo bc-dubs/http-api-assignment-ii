@@ -5,7 +5,58 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
+    const handleResponse = async (response, parseResponse) => {
+      
+    };
 
+    const sendName = async (name, age) => {
+      const response = await fetch('/addUser', {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `name=${name}&age=${age}`
+      });
+
+      handleResponse(response);
+    };
+
+    
+    const userUpdate = async (url, method) => {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Accept": "application/json",
+        }
+      });
+
+      handleResponse(response, method === 'get');
+    };
+    
+    const init = () => {
+      const nameForm = document.querySelector('#nameForm');
+      const nameField = nameForm.querySelector('#nameField');
+      const ageField = nameForm.querySelector('#ageField');
+
+      const userForm = document.querySelector('#userForm');
+      const urlField = userForm.querySelector('#urlField');
+      const methodSelect = userForm.querySelector('#methodSelect');
+      
+      nameForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        sendName(nameField.value, ageField.value);
+        return false;
+      });
+
+      userForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        userUpdate(urlField.value, methodSelect.value);
+        return false;
+      });
+    };
+
+    window.onload = init;
   </script>
 </head>
 <body>
