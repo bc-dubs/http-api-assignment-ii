@@ -6,7 +6,43 @@
   
   <script>
     const handleResponse = async (response, parseResponse) => {
-      
+      const content = document.querySelector('#content');
+
+      switch(response.status) {
+        case 200: 
+          content.innerHTML = `<b>Success</b>`;
+          break;
+        case 201:
+          content.innerHTML = `<b>Created</b>`;
+          break;
+        case 204:
+          content.innerHTML = `<b>Updated (No Content)</b>`;
+          parseResponse = false; //necessary since sendName sets it to true by default
+          break;
+        case 400: 
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 404:
+          content.innerHTML = `<b>Resource Not Found</b>`;
+          break;
+        default: 
+          content.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+
+      if(parseResponse){
+        const resObj = JSON.parse(await response.text());
+        console.log(resObj);
+
+        let message = "";
+        if(resObj["users"]){
+          message += JSON.stringify(resObj["users"]);
+        }else if(resObj["message"]){
+          message += `Message: ${resObj["message"]}`;
+        }
+
+        content.innerHTML += `<p>${message}</p>`;
+      }
     };
 
     const sendName = async (name, age) => {
@@ -19,7 +55,7 @@
         body: `name=${name}&age=${age}`
       });
 
-      handleResponse(response);
+      handleResponse(response, true);
     };
 
     
